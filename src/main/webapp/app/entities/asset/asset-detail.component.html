@@ -1,0 +1,47 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="asset">
+            <h2><span>Asset</span> {{asset.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Name</span></dt>
+                <dd>
+                    <span>{{asset.name}}</span>
+                </dd>
+                <dt><span>Long Name</span></dt>
+                <dd>
+                    <span>{{asset.longName}}</span>
+                </dd>
+                <dt><span>Market Cap</span></dt>
+                <dd>
+                    <span>{{asset.marketCap}}</span>
+                </dd>
+                <dt><span>Price</span></dt>
+                <dd>
+                    <span>{{asset.price}}</span>
+                </dd>
+                <dt><span>Supply</span></dt>
+                <dd>
+                    <span>{{asset.supply}}</span>
+                </dd>
+                <dt><span>Is Visible</span></dt>
+                <dd>
+                    <span>{{asset.isVisible}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/asset', asset.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

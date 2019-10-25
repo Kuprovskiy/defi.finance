@@ -1,0 +1,82 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            <h2 id="jhi-asset-heading">Create or edit a Asset</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!editForm.get('id').value">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id"
+                        readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_name">Name</label>
+                    <input type="text" class="form-control" name="name" id="field_name"
+                           formControlName="name"/>
+                    <div *ngIf="editForm.get('name').invalid && (editForm.get('name').dirty || editForm.get('name').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('name').errors.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_longName">Long Name</label>
+                    <input type="text" class="form-control" name="longName" id="field_longName"
+                           formControlName="longName"/>
+                    <div *ngIf="editForm.get('longName').invalid && (editForm.get('longName').dirty || editForm.get('longName').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('longName').errors.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_marketCap">Market Cap</label>
+                    <input type="number" class="form-control" name="marketCap" id="field_marketCap"
+                           formControlName="marketCap"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_price">Price</label>
+                    <input type="number" class="form-control" name="price" id="field_price"
+                           formControlName="price"/>
+                    <div *ngIf="editForm.get('price').invalid && (editForm.get('price').dirty || editForm.get('price').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('price').errors.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                            [hidden]="!editForm.get('price')?.errors?.number">
+                            This field should be a number.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_supply">Supply</label>
+                    <input type="number" class="form-control" name="supply" id="field_supply"
+                           formControlName="supply"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_isVisible">Is Visible</label>
+                    <input type="checkbox" class="form-control" name="isVisible" id="field_isVisible"
+                           formControlName="isVisible"/>
+                    <div *ngIf="editForm.get('isVisible').invalid && (editForm.get('isVisible').dirty || editForm.get('isVisible').touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('isVisible').errors.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

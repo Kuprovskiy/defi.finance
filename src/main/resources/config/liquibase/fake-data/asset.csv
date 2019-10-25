@@ -1,0 +1,5 @@
+id;name;long_name;market_cap;price;supply;is_visible
+1;USD;US Dollar;1;1;1;false
+2;USDC;Stablecoin;5808;1.05;86617;true
+3;ETH;Ethereum;83244;185;21233;true
+4;DAI;Stablecoin;43194;1.05;29122;true
