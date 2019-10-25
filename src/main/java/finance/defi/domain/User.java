@@ -5,6 +5,7 @@ import finance.defi.config.Constants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;
+import org.jboss.aerogear.security.otp.api.Base32;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -84,6 +85,15 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "reset_date")
     private Instant resetDate = null;
+
+    @JsonIgnore
+    @Column(name = "2fa")
+    private Boolean isUsing2FA = false;
+
+    //TODO must be stored in secured place
+    @JsonIgnore
+    @Column(name = "secret_2fa")
+    private String secret2fa = Base32.random();
 
     @JsonIgnore
     @ManyToMany
@@ -206,6 +216,22 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setTrustDeviceKey(String trustDeviceKey) {
         this.trustDeviceKey = trustDeviceKey;
+    }
+
+    public Boolean getUsing2FA() {
+        return isUsing2FA;
+    }
+
+    public void setUsing2FA(Boolean using2FA) {
+        isUsing2FA = using2FA;
+    }
+
+    public String getSecret2fa() {
+        return secret2fa;
+    }
+
+    public void setSecret2fa(String secret2fa) {
+        this.secret2fa = secret2fa;
     }
 
     @Override

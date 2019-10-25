@@ -120,6 +120,6 @@ public class MailService {
     @Async
     public void sendAuthorizeDeviceEmail(User user, TrustedDeviceDTO trustedDeviceDTO) {
         log.debug("Sending authorize device email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, trustedDeviceDTO, "mail/authorizeDeviceEmail", "email.authorizeDevice.title");
+        sendEmailFromTemplate(user, trustedDeviceDTO, "mail/authorizeDeviceEmail", "email.device.title");
     }
 }

@@ -6,6 +6,7 @@ import finance.defi.repository.UserRepository;
 import finance.defi.security.SecurityUtils;
 import finance.defi.service.MailService;
 import finance.defi.service.UserService;
+import finance.defi.service.dto.Af2DTO;
 import finance.defi.service.dto.PasswordChangeDTO;
 import finance.defi.service.dto.UserDTO;
 import finance.defi.web.rest.errors.*;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -175,6 +177,17 @@ public class AccountResource {
         if (!user.isPresent()) {
             throw new AccountResourceException("No user was found for this reset key");
         }
+    }
+
+    @PostMapping(path = "/account/2fa/enable")
+    @ResponseBody
+    public Af2DTO enableUser2FA()
+        throws UnsupportedEncodingException {
+
+        User user = userService.enableUser2fa().orElseThrow(
+            () -> new EntityNotFoundException("User not found"));
+
+        return new Af2DTO(userService.generateQRUrl(user), userService.get2faSecret(user));
     }
 
     private static boolean checkPasswordLength(String password) {

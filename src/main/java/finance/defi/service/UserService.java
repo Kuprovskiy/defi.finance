@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -41,6 +43,11 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
+
+    public static String QR_PREFIX =
+        "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
+
+    private static final Object APP_NAME = "DeFi";
 
     private final UserRepository userRepository;
 
@@ -131,6 +138,32 @@ public class UserService {
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
+    }
+
+    public Optional<User> enableUser2fa() {
+
+        //TODO enable only if disabled
+        return Optional.of(userRepository
+            .findOneByLogin(SecurityUtils.getCurrentUserLogin().get()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(user -> {
+                user.setUsing2FA(true);
+
+                log.debug("Enabled 2fa for User: {}", user);
+                return user;
+            });
+    }
+
+    public String generateQRUrl(User user) throws UnsupportedEncodingException {
+        return QR_PREFIX + URLEncoder.encode(String.format(
+            "otpauth://totp/%s:%s?secret=%s&issuer=%s",
+            APP_NAME, user.getEmail(), user.getSecret2fa(), APP_NAME),
+            "UTF-8");
+    }
+
+    public String get2faSecret(User user) {
+        return user.getSecret2fa();
     }
 
     private void saveTrustedDevice(HttpServletRequest request, User newUser) {

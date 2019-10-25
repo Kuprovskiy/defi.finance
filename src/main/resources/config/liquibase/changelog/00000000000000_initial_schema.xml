@@ -34,6 +34,8 @@
             <column name="activation_key" type="varchar(20)"/>
             <column name="reset_key" type="varchar(20)"/>
             <column name="trust_device_key" type="varchar(20)"/>
+            <column name="2fa" type="boolean" valueBoolean="false"/>
+            <column name="secret_2fa" type="varchar(50)"/>
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
