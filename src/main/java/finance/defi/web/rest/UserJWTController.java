@@ -6,6 +6,7 @@ import finance.defi.web.rest.vm.LoginVM;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import finance.defi.web.rest.vm.PhoneVM;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,15 @@ public class UserJWTController {
     public UserJWTController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
+    }
+
+    @PostMapping("/mobile/authenticate")
+    public ResponseEntity<JWTToken> authorizeMobile(@Valid @RequestBody PhoneVM phoneVM) {
+        LoginVM loginVM = new LoginVM();
+        loginVM.setUsername(phoneVM.getPhone());
+        loginVM.setPassword(phoneVM.getPassword());
+        loginVM.setRememberMe(phoneVM.isRememberMe());
+        return authorize(loginVM);
     }
 
     @PostMapping("/authenticate")

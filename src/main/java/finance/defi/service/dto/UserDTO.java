@@ -1,5 +1,6 @@
 package finance.defi.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import finance.defi.config.Constants;
 
 import finance.defi.domain.Authority;
@@ -21,8 +22,9 @@ public class UserDTO {
     private Long id;
 
     @NotBlank
-    @Pattern(regexp = Constants.LOGIN_REGEX)
+    @Pattern(regexp = Constants.PHONE_REGEX)
     @Size(min = 1, max = 50)
+    @JsonProperty("phone")
     private String login;
 
     @Size(max = 50)
