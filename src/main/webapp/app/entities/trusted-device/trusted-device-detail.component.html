@@ -1,0 +1,59 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="trustedDevice">
+            <h2><span>Trusted Device</span> {{trustedDevice.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Device</span></dt>
+                <dd>
+                    <span>{{trustedDevice.device}}</span>
+                </dd>
+                <dt><span>Device Version</span></dt>
+                <dd>
+                    <span>{{trustedDevice.deviceVersion}}</span>
+                </dd>
+                <dt><span>Device Os</span></dt>
+                <dd>
+                    <span>{{trustedDevice.deviceOs}}</span>
+                </dd>
+                <dt><span>Device Details</span></dt>
+                <dd>
+                    <span>{{trustedDevice.deviceDetails}}</span>
+                </dd>
+                <dt><span>Location</span></dt>
+                <dd>
+                    <span>{{trustedDevice.location}}</span>
+                </dd>
+                <dt><span>Created At</span></dt>
+                <dd>
+                    <span>{{trustedDevice.createdAt}}</span>
+                </dd>
+                <dt><span>Ip Address</span></dt>
+                <dd>
+                    <span>{{trustedDevice.ipAddress}}</span>
+                </dd>
+                <dt><span>Trusted</span></dt>
+                <dd>
+                    <span>{{trustedDevice.trusted}}</span>
+                </dd>
+                <dt><span>User</span></dt>
+                <dd>
+                    {{trustedDevice.userLogin}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/trusted-device', trustedDevice.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

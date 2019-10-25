@@ -7,6 +7,10 @@ import { RouterModule } from '@angular/router';
       {
         path: 'asset',
         loadChildren: () => import('./asset/asset.module').then(m => m.DefiAssetModule)
+      },
+      {
+        path: 'trusted-device',
+        loadChildren: () => import('./trusted-device/trusted-device.module').then(m => m.DefiTrustedDeviceModule)
       }
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ])

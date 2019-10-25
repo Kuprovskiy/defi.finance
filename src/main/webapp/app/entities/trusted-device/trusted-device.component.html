@@ -1,0 +1,83 @@
+<div>
+    <h2 id="page-heading">
+        <span>Trusted Devices</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-trusted-device" [routerLink]="['/trusted-device/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span >
+            Create a new Trusted Device
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="alert alert-warning" *ngIf="trustedDevices?.length === 0">
+        <span>No trustedDevices found</span>
+    </div>
+    <div class="table-responsive" *ngIf="trustedDevices?.length > 0">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="device"><span>Device</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="deviceVersion"><span>Device Version</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="deviceOs"><span>Device Os</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="deviceDetails"><span>Device Details</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="location"><span>Location</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="createdAt"><span>Created At</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="ipAddress"><span>Ip Address</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="trusted"><span>Trusted</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="userLogin"><span>User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let trustedDevice of trustedDevices ;trackBy: trackId">
+                <td><a [routerLink]="['/trusted-device', trustedDevice.id, 'view' ]">{{trustedDevice.id}}</a></td>
+                <td>{{trustedDevice.device}}</td>
+                <td>{{trustedDevice.deviceVersion}}</td>
+                <td>{{trustedDevice.deviceOs}}</td>
+                <td>{{trustedDevice.deviceDetails}}</td>
+                <td>{{trustedDevice.location}}</td>
+                <td>{{trustedDevice.createdAt | date:'medium'}}</td>
+                <td>{{trustedDevice.ipAddress}}</td>
+                <td>{{trustedDevice.trusted}}</td>
+                <td>
+                    {{trustedDevice.userLogin}}
+                </td>
+                <td class="text-right">
+                    <div class="btn-group">
+                        <button type="submit"
+                                [routerLink]="['/trusted-device', trustedDevice.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/trusted-device', trustedDevice.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/trusted-device', { outlets: { popup: trustedDevice.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div [hidden]="trustedDevices?.length === 0">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="totalItems" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</div>

@@ -67,9 +67,7 @@ public class AssetResource {
     /**
      * {@code GET  /assets} : get all the assets.
      *
-
      * @param pageable the pagination information.
-
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of assets in body.
      */
     @GetMapping("/assets")
