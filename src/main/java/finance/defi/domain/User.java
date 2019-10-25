@@ -77,6 +77,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JsonIgnore
     private String resetKey;
 
+    @Size(max = 20)
+    @Column(name = "trust_device_key", length = 20)
+    @JsonIgnore
+    private String trustDeviceKey;
+
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
@@ -193,6 +198,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public String getTrustDeviceKey() {
+        return trustDeviceKey;
+    }
+
+    public void setTrustDeviceKey(String trustDeviceKey) {
+        this.trustDeviceKey = trustDeviceKey;
     }
 
     @Override

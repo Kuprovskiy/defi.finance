@@ -1,10 +1,15 @@
 package finance.defi.service.impl;
 
+import finance.defi.domain.User;
+import finance.defi.security.SecurityUtils;
+import finance.defi.service.MailService;
 import finance.defi.service.TrustedDeviceService;
 import finance.defi.domain.TrustedDevice;
 import finance.defi.repository.TrustedDeviceRepository;
+import finance.defi.service.UserService;
 import finance.defi.service.dto.TrustedDeviceDTO;
 import finance.defi.service.mapper.TrustedDeviceMapper;
+import finance.defi.web.rest.errors.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -28,9 +36,18 @@ public class TrustedDeviceServiceImpl implements TrustedDeviceService {
 
     private final TrustedDeviceMapper trustedDeviceMapper;
 
-    public TrustedDeviceServiceImpl(TrustedDeviceRepository trustedDeviceRepository, TrustedDeviceMapper trustedDeviceMapper) {
+    private final UserService userService;
+
+    private final MailService mailService;
+
+    public TrustedDeviceServiceImpl(TrustedDeviceRepository trustedDeviceRepository,
+                                    TrustedDeviceMapper trustedDeviceMapper,
+                                    UserService userService,
+                                    MailService mailService) {
         this.trustedDeviceRepository = trustedDeviceRepository;
         this.trustedDeviceMapper = trustedDeviceMapper;
+        this.userService = userService;
+        this.mailService = mailService;
     }
 
     /**
@@ -70,5 +87,44 @@ public class TrustedDeviceServiceImpl implements TrustedDeviceService {
     public void delete(Long id) {
         log.debug("Request to delete TrustedDevice : {}", id);
         trustedDeviceRepository.deleteById(id);
+    }
+
+    @Override
+    public void validateTrustDevice(HttpServletRequest request, User currentUser) {
+
+        TrustedDeviceDTO newTrustedDevice = SecurityUtils.getCurrentDevice(request, currentUser, false);
+        newTrustedDevice.setCreatedAt(Instant.now().minusSeconds(2592000)); // 2592000 = 1 month
+
+        List<TrustedDevice> trustedDevices =
+            this.findByUserIsCurrentUserAndDeviceAndDeviceOsAndTrustedAndDateAfter(
+                newTrustedDevice,
+                currentUser);
+        if (trustedDevices.size() == 0) {
+
+            currentUser = userService.requestTrustDeviceApprove(currentUser);
+
+            newTrustedDevice.setCreatedAt(Instant.now());
+            TrustedDeviceDTO trustedDevice =
+                this.save(newTrustedDevice);
+            this.mailService.sendAuthorizeDeviceEmail(currentUser, trustedDevice);
+
+            throw new EntityNotFoundException("Unauthorized device");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<TrustedDevice> findByUserIsCurrentUserAndDeviceAndDeviceOsAndTrustedAndDateAfter(
+        TrustedDeviceDTO trustedDeviceDTO,
+        User user
+    ) {
+        log.debug("Request to get TrustedDevice : {}, location: {}, ipAddress: {}, trusted: {}, date after: {}",
+            trustedDeviceDTO.getDevice(), trustedDeviceDTO.getLocation(), trustedDeviceDTO.getId(), true, trustedDeviceDTO.getCreatedAt());
+        return trustedDeviceRepository.findByUserAndDeviceAndDeviceOsAndTrustedAndAndCreatedAtAfter(
+            user,
+            trustedDeviceDTO.getDevice(),
+            trustedDeviceDTO.getDeviceOs(),
+            true,
+            trustedDeviceDTO.getCreatedAt()
+        );
     }
 }

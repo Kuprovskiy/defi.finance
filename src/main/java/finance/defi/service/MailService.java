@@ -2,6 +2,7 @@ package finance.defi.service;
 
 import finance.defi.domain.User;
 
+import finance.defi.service.dto.TrustedDeviceDTO;
 import io.github.jhipster.config.JHipsterProperties;
 
 import java.nio.charset.StandardCharsets;
@@ -29,6 +30,8 @@ public class MailService {
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
     private static final String USER = "user";
+
+    private static final String DEVICE = "device";
 
     private static final String BASE_URL = "baseUrl";
 
@@ -85,6 +88,18 @@ public class MailService {
     }
 
     @Async
+    public void sendEmailFromTemplate(User user, TrustedDeviceDTO trustedDevice, String templateName, String titleKey) {
+        Locale locale = Locale.forLanguageTag((null != user.getLangKey()) ? user.getLangKey() : "en");
+        Context context = new Context(locale);
+        context.setVariable(USER, user);
+        context.setVariable(DEVICE, trustedDevice);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    @Async
     public void sendActivationEmail(User user) {
         log.debug("Sending activation email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
@@ -100,5 +115,11 @@ public class MailService {
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
+    }
+
+    @Async
+    public void sendAuthorizeDeviceEmail(User user, TrustedDeviceDTO trustedDeviceDTO) {
+        log.debug("Sending authorize device email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user, trustedDeviceDTO, "mail/authorizeDeviceEmail", "email.authorizeDevice.title");
     }
 }

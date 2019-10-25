@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{email.activation.title}">JHipster activation</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+    </head>
+    <body>
+        <p th:text="#{email.device.title}">
+            Confirm New Device
+        </p>
+        <p th:text="#{email.device.text1}">
+            You recently attempted to sign into your DeFi account from a new device or in a new location. As a security measure, we require additional confirmation before allowing access to your DeFi account
+        </p>
+        <p>
+            <span>Device: </span>
+            <strong th:text="${device.device}"></strong>
+            <strong> v</strong><strong th:text="${device.deviceVersion}"></strong>
+            <strong th:text="${device.deviceOs}"></strong>
+        </p>
+        <p>
+            <span>Location: </span>
+            <strong th:text="${device.location}"></strong>
+        </p>
+        <p>
+            <span>IP Address: </span>
+            <strong th:text="${device.ipAddress}"></strong>
+        </p>
+        <p th:text="#{email.device.text2}">
+            If this was legitimate activity, you can authorize your new device below.
+        </p>
+        <p>
+            <a th:with="url=(@{|${baseUrl}/device/authorize?key=${user.trustDeviceKey}&device=${device.id}|})" th:href="${url}">Authorize This Device</a>
+        </p>
+        <p>
+            <span th:text="#{email.activation.text2}">Regards, </span>
+            <br/>
+            <em th:text="#{email.signature}">Defi Team.</em>
+        </p>
+    </body>
+</html>

@@ -4,6 +4,8 @@ import finance.defi.DefiApp;
 import finance.defi.domain.User;
 import finance.defi.repository.UserRepository;
 import finance.defi.security.jwt.TokenProvider;
+import finance.defi.service.TrustedDeviceService;
+import finance.defi.service.UserService;
 import finance.defi.web.rest.errors.ExceptionTranslator;
 import finance.defi.web.rest.vm.LoginVM;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +42,12 @@ public class UserJWTControllerIT {
     private UserRepository userRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TrustedDeviceService trustedDeviceService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -49,7 +57,11 @@ public class UserJWTControllerIT {
 
     @BeforeEach
     public void setup() {
-        UserJWTController userJWTController = new UserJWTController(tokenProvider, authenticationManager);
+        UserJWTController userJWTController = new UserJWTController(
+            tokenProvider,
+            authenticationManager,
+            userService,
+            trustedDeviceService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(userJWTController)
             .setControllerAdvice(exceptionTranslator)
             .build();

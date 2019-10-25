@@ -1,10 +1,16 @@
 package finance.defi.security;
 
+import eu.bitwalker.useragentutils.UserAgent;
+import finance.defi.domain.User;
+import finance.defi.service.dto.TrustedDeviceDTO;
+import finance.defi.web.rest.errors.EntityNotFoundException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -83,5 +89,40 @@ public final class SecurityUtils {
                     .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority));
             })
             .orElse(false);
+    }
+
+    public static String getClientIp(HttpServletRequest request) {
+
+        String remoteAddr = "";
+        if (request != null) {
+            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+            if (remoteAddr == null || "".equals(remoteAddr)) {
+                remoteAddr = request.getRemoteAddr();
+            }
+        }
+        return remoteAddr;
+    }
+
+    public static TrustedDeviceDTO getCurrentDevice(HttpServletRequest request, User currentUser, boolean trusted) {
+        String userAgentHeader = request.getHeader("User-Agent");
+        if (userAgentHeader == null || userAgentHeader.isEmpty()) {
+            throw new EntityNotFoundException("Undefined device");
+        }
+        UserAgent userAgent = UserAgent.parseUserAgentString(userAgentHeader);
+
+        TrustedDeviceDTO newTrustedDevice = new TrustedDeviceDTO();
+        newTrustedDevice.setCreatedAt(Instant.now());
+        newTrustedDevice.setDevice(userAgent.getBrowser().getName());
+        newTrustedDevice.setDeviceVersion(
+            userAgent.getBrowserVersion().getMajorVersion() + "." +
+            userAgent.getBrowserVersion().getMinorVersion());
+        newTrustedDevice.setDeviceOs(userAgent.getOperatingSystem().getName());
+
+        newTrustedDevice.setDeviceDetails(userAgentHeader);
+        newTrustedDevice.setIpAddress(SecurityUtils.getClientIp(request));
+        newTrustedDevice.setTrusted(trusted);
+        newTrustedDevice.setUserId(currentUser.getId());
+
+        return newTrustedDevice;
     }
 }

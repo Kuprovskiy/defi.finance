@@ -1,16 +1,20 @@
 package finance.defi.service;
 
+import eu.bitwalker.useragentutils.UserAgent;
 import finance.defi.config.Constants;
 import finance.defi.domain.Authority;
+import finance.defi.domain.TrustedDevice;
 import finance.defi.domain.User;
 import finance.defi.repository.AuthorityRepository;
+import finance.defi.repository.TrustedDeviceRepository;
 import finance.defi.repository.UserRepository;
 import finance.defi.security.AuthoritiesConstants;
 import finance.defi.security.SecurityUtils;
 import finance.defi.service.dto.UserDTO;
 import finance.defi.service.util.RandomUtil;
-import finance.defi.web.rest.errors.*;
-
+import finance.defi.web.rest.errors.EmailAlreadyUsedException;
+import finance.defi.web.rest.errors.InvalidPasswordException;
+import finance.defi.web.rest.errors.LoginAlreadyUsedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,9 +24,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -40,10 +48,16 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository) {
+    private final TrustedDeviceRepository trustedDeviceRepository;
+
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       AuthorityRepository authorityRepository,
+                       TrustedDeviceRepository trustedDeviceRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
+        this.trustedDeviceRepository = trustedDeviceRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -80,7 +94,7 @@ public class UserService {
             });
     }
 
-    public User registerUser(UserDTO userDTO, String password) {
+    public User registerUser(HttpServletRequest request, UserDTO userDTO, String password) {
         userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).ifPresent(existingUser -> {
             boolean removed = removeNonActivatedUser(existingUser);
             if (!removed) {
@@ -111,8 +125,31 @@ public class UserService {
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
+
+        // save trusted device for a new user
+        this.saveTrustedDevice(request, newUser);
+
         log.debug("Created Information for User: {}", newUser);
         return newUser;
+    }
+
+    private void saveTrustedDevice(HttpServletRequest request, User newUser) {
+        TrustedDevice trustedDevice = new TrustedDevice();
+        String userAgentHeader = request.getHeader("User-Agent");
+        UserAgent userAgent = UserAgent.parseUserAgentString(userAgentHeader);
+
+        trustedDevice.setDevice(userAgent.getBrowser().getName());
+        trustedDevice.setDeviceVersion(
+            userAgent.getBrowserVersion().getMajorVersion() + "." +
+                userAgent.getBrowserVersion().getMinorVersion());
+        trustedDevice.setDeviceOs(userAgent.getOperatingSystem().getName());
+        trustedDevice.setDeviceDetails(userAgentHeader);
+        trustedDevice.setIpAddress(SecurityUtils.getClientIp(request));
+        trustedDevice.setCreatedAt(Instant.now());
+        trustedDevice.setTrusted(true);
+        trustedDevice.setUser(newUser);
+
+        this.trustedDeviceRepository.save(trustedDevice);
     }
 
     private boolean removeNonActivatedUser(User existingUser){
@@ -272,4 +309,9 @@ public class UserService {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
+    public User requestTrustDeviceApprove(User user) {
+        user.setTrustDeviceKey(RandomUtil.generateResetKey());
+        userRepository.save(user);
+        return user;
+    }
 }
