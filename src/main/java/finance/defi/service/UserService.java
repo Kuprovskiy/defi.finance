@@ -10,16 +10,20 @@ import finance.defi.repository.TrustedDeviceRepository;
 import finance.defi.repository.UserRepository;
 import finance.defi.security.AuthoritiesConstants;
 import finance.defi.security.SecurityUtils;
+import finance.defi.service.dto.Disable2faDTO;
 import finance.defi.service.dto.UserDTO;
+import finance.defi.service.util.NumberUtil;
 import finance.defi.service.util.RandomUtil;
 import finance.defi.web.rest.errors.EmailAlreadyUsedException;
 import finance.defi.web.rest.errors.InvalidPasswordException;
 import finance.defi.web.rest.errors.LoginAlreadyUsedException;
+import org.jboss.aerogear.security.otp.Totp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -152,6 +156,27 @@ public class UserService {
 
                 log.debug("Enabled 2fa for User: {}", user);
                 return user;
+            });
+    }
+
+    public void disableUser2fa(Disable2faDTO disable2faDTO) {
+
+        SecurityUtils.getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(user -> {
+                if (user.getUsing2FA()) {
+                    String currentEncryptedPassword = user.getPassword();
+                    if (!passwordEncoder.matches(disable2faDTO.getPassword(), currentEncryptedPassword)) {
+                        throw new InvalidPasswordException();
+                    }
+
+                    Totp totp = new Totp(user.getSecret2fa());
+                    if (!NumberUtil.isValidLong(disable2faDTO.getCode()) || !totp.verify(disable2faDTO.getCode())) {
+                        throw new BadCredentialsException("Invalid verification code");
+                    }
+                    user.setUsing2FA(false);
+                    log.debug("Disabled 2fa for User: {}", user);
+                }
             });
     }
 

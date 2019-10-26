@@ -7,6 +7,7 @@ import finance.defi.security.SecurityUtils;
 import finance.defi.service.MailService;
 import finance.defi.service.UserService;
 import finance.defi.service.dto.Af2DTO;
+import finance.defi.service.dto.Disable2faDTO;
 import finance.defi.service.dto.PasswordChangeDTO;
 import finance.defi.service.dto.UserDTO;
 import finance.defi.web.rest.errors.*;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -188,6 +190,15 @@ public class AccountResource {
             () -> new EntityNotFoundException("User not found"));
 
         return new Af2DTO(userService.generateQRUrl(user), userService.get2faSecret(user));
+    }
+
+    @PostMapping(path = "/account/2fa/disable")
+    @ResponseBody
+    public ResponseEntity<Void> disableUser2FA(@Valid @RequestBody Disable2faDTO disable2faDTO) {
+        userService.disableUser2fa(disable2faDTO);
+        //TODO notify by mail that 2FA has bean disabled
+        //TODO disable withdrawal for 24 hours after disable 2FA for a sequrity reason
+        return ResponseEntity.noContent().build();
     }
 
     private static boolean checkPasswordLength(String password) {
