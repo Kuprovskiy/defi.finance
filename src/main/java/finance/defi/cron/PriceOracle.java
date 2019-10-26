@@ -50,7 +50,7 @@ public class PriceOracle {
 
     private final WalletService walletService;
 
-    private static String apiKey = "97ada2c2-0c51-4443-8070-b289797d4a45";
+    private static String apiKey = "76da8a6c-d2b9-4ee4-9012-ccfc339715f5";// "97ada2c2-0c51-4443-8070-b289797d4a45";
 
     public PriceOracle(AssetRepository assetRepository,
                        WalletRepository walletRepository,
@@ -234,7 +234,7 @@ public class PriceOracle {
         paratmers.add(new BasicNameValuePair("start","1"));
         paratmers.add(new BasicNameValuePair("limit","500"));
         paratmers.add(new BasicNameValuePair("convert","USD"));
-        List<String> supportedCurrencies = Arrays.asList(Constants.ETH, Constants.DAI, Constants.USDC, Constants.BAT);
+        List<String> supportedCurrencies = Arrays.asList(Constants.ETH, Constants.DAI, Constants.USDC);
         HashMap<String, BigDecimal> prices = new HashMap<String, BigDecimal>();
 
         try {
