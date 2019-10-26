@@ -95,6 +95,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "secret_2fa")
     private String secret2fa = Base32.random();
 
+    @NotNull
+    @Column(name = "secret", length = 255)
+    @JsonIgnore
+    private String secret;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -232,6 +237,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setSecret2fa(String secret2fa) {
         this.secret2fa = secret2fa;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
     @Override

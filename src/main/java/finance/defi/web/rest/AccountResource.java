@@ -6,10 +6,7 @@ import finance.defi.repository.UserRepository;
 import finance.defi.security.SecurityUtils;
 import finance.defi.service.MailService;
 import finance.defi.service.UserService;
-import finance.defi.service.dto.Af2DTO;
-import finance.defi.service.dto.Disable2faDTO;
-import finance.defi.service.dto.PasswordChangeDTO;
-import finance.defi.service.dto.UserDTO;
+import finance.defi.service.dto.*;
 import finance.defi.web.rest.errors.*;
 import finance.defi.web.rest.vm.KeyAndPasswordVM;
 import finance.defi.web.rest.vm.ManagedUserVM;
@@ -72,7 +69,8 @@ public class AccountResource {
             request,
             managedUserVM,
             managedUserVM.getPassword(),
-            managedUserVM.getAddress());
+            managedUserVM.getAddress(),
+            managedUserVM.getSecret());
 
         mailService.sendActivationEmail(user);
     }
@@ -114,6 +112,14 @@ public class AccountResource {
         return userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
+    }
+
+    @GetMapping("/account/pre")
+    public PrePaymentDTO getAccountPrePaymentSecret() {
+        User current = userService.getUserWithAuthorities()
+            .orElseThrow(() -> new AccountResourceException("User could not be found"));
+
+        return new PrePaymentDTO(current.getSecret());
     }
 
     /**

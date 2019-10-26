@@ -111,7 +111,7 @@ public class UserService {
             });
     }
 
-    public User registerUser(HttpServletRequest request, UserDTO userDTO, String password, String address) {
+    public User registerUser(HttpServletRequest request, UserDTO userDTO, String password, String address, String secret) {
         userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).ifPresent(existingUser -> {
             boolean removed = removeNonActivatedUser(existingUser);
             if (!removed) {
@@ -134,6 +134,7 @@ public class UserService {
         newUser.setEmail(userDTO.getEmail().toLowerCase());
         newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setLangKey(userDTO.getLangKey());
+        newUser.setSecret(secret);
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key

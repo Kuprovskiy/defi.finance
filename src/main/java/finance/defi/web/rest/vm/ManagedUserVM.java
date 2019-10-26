@@ -20,6 +20,9 @@ public class ManagedUserVM extends UserDTO {
     @NotNull
     private String address;
 
+    @NotNull
+    private String secret;
+
     public ManagedUserVM() {
         // Empty constructor needed for Jackson.
     }
@@ -38,6 +41,14 @@ public class ManagedUserVM extends UserDTO {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
     @Override
