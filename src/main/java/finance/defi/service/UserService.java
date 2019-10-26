@@ -12,6 +12,7 @@ import finance.defi.repository.UserRepository;
 import finance.defi.repository.WalletRepository;
 import finance.defi.security.AuthoritiesConstants;
 import finance.defi.security.SecurityUtils;
+import finance.defi.service.dto.DefaultAssetsDTO;
 import finance.defi.service.dto.Disable2faDTO;
 import finance.defi.service.dto.UserDTO;
 import finance.defi.service.util.NumberUtil;
@@ -175,6 +176,20 @@ public class UserService {
                 user.setUsing2FA(true);
 
                 log.debug("Enabled 2fa for User: {}", user);
+                return user;
+            });
+    }
+
+    public Optional<User> changeDefaultCurrency(DefaultAssetsDTO defaultAssetsDTO) {
+
+        return Optional.of(userRepository
+            .findOneByLogin(SecurityUtils.getCurrentUserLogin().get()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(user -> {
+                user.setBaseAsset(defaultAssetsDTO.getAssetId());
+
+                log.debug("Changed base currency: {}", user);
                 return user;
             });
     }

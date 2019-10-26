@@ -3,6 +3,7 @@ package finance.defi.web.rest;
 
 import finance.defi.domain.User;
 import finance.defi.domain.Wallet;
+import finance.defi.repository.AssetRepository;
 import finance.defi.repository.UserRepository;
 import finance.defi.security.SecurityUtils;
 import finance.defi.service.MailService;
@@ -47,15 +48,19 @@ public class AccountResource {
 
     private final WalletService walletService;
 
+    private final AssetRepository assetRepository;
+
     public AccountResource(UserRepository userRepository,
                            UserService userService,
                            MailService mailService,
-                           WalletService walletService) {
+                           WalletService walletService,
+                           AssetRepository assetRepository) {
 
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
         this.walletService = walletService;
+        this.assetRepository = assetRepository;
     }
 
     /**
@@ -227,6 +232,16 @@ public class AccountResource {
         //TODO notify by mail that 2FA has bean disabled
         //TODO disable withdrawal for 24 hours after disable 2FA for a sequrity reason
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(path = "/account/default_currency")
+    public void changeDefaultCurrency(@Valid @RequestBody DefaultAssetsDTO defaultAssetsDTO) {
+
+        assetRepository.findById(defaultAssetsDTO.getAssetId()).orElseThrow(
+            () -> new EntityNotFoundException("Asset not found"));
+
+        userService.changeDefaultCurrency(defaultAssetsDTO).orElseThrow(
+            () -> new EntityNotFoundException("User not found"));
     }
 
     private static boolean checkPasswordLength(String password) {

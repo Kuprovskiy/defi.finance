@@ -2,14 +2,17 @@ package finance.defi.service.impl;
 
 import finance.defi.domain.AccountBalance;
 import finance.defi.domain.Asset;
+import finance.defi.domain.User;
 import finance.defi.domain.enumeration.BalanceType;
 import finance.defi.repository.AccountBalanceRepository;
 import finance.defi.repository.AssetRepository;
 import finance.defi.service.AccountBalanceService;
+import finance.defi.service.UserService;
 import finance.defi.service.dto.AccountTotalBalanceDTO;
 import finance.defi.service.dto.BalanceDTO;
 import finance.defi.service.mapper.AccountBalanceMapper;
 import finance.defi.web.rest.errors.BadRequestAlertException;
+import finance.defi.web.rest.errors.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -37,12 +40,16 @@ public class AccountBalanceServiceImpl implements AccountBalanceService {
 
     private final AssetRepository assetRepository;
 
+    private final UserService userService;
+
     public AccountBalanceServiceImpl(AccountBalanceRepository accountBalanceRepository,
                                      AccountBalanceMapper accountBalanceMapper,
-                                     AssetRepository assetRepository) {
+                                     AssetRepository assetRepository,
+                                     UserService userService) {
         this.accountBalanceRepository = accountBalanceRepository;
         this.accountBalanceMapper = accountBalanceMapper;
         this.assetRepository = assetRepository;
+        this.userService = userService;
     }
 
     /**
@@ -60,9 +67,11 @@ public class AccountBalanceServiceImpl implements AccountBalanceService {
         List<BalanceDTO> lendBalances = new ArrayList<>();
         List<BalanceDTO> borrowBalances = new ArrayList<>();
 
-        //TODO remove hardcoded 1L
-        Asset baseAsset = assetRepository.findById(1L).orElseThrow(
-            () -> new BadRequestAlertException("Asset not found", null, "assetnull"));
+        User currentUser = userService.getUserWithAuthorities().orElseThrow(
+            () -> new EntityNotFoundException("User not found"));
+
+        Asset baseAsset = assetRepository.findById(currentUser.getId()).orElseThrow(
+            () -> new EntityNotFoundException("Asset not found"));
 
         Page<AccountBalance> accountBalances = accountBalanceRepository.findByUserIsCurrentUser(new PageRequest(0, 9));
 

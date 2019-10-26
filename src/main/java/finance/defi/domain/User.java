@@ -100,6 +100,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JsonIgnore
     private String secret;
 
+    @Column(name = "base_asset_id", nullable = false)
+    @JsonIgnore
+    private Long baseAsset = 1L;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -245,6 +249,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public Long getBaseAsset() {
+        return baseAsset;
+    }
+
+    public void setBaseAsset(Long baseAsset) {
+        this.baseAsset = baseAsset;
     }
 
     @Override

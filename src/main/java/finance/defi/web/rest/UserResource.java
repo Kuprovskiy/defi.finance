@@ -10,9 +10,11 @@ import finance.defi.service.dto.UserDTO;
 import finance.defi.web.rest.errors.BadRequestAlertException;
 import finance.defi.web.rest.errors.EmailAlreadyUsedException;
 import finance.defi.web.rest.errors.LoginAlreadyUsedException;
+
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +30,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * REST controller for managing users.
