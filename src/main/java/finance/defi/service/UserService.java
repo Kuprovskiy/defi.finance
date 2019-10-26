@@ -5,9 +5,11 @@ import finance.defi.config.Constants;
 import finance.defi.domain.Authority;
 import finance.defi.domain.TrustedDevice;
 import finance.defi.domain.User;
+import finance.defi.domain.Wallet;
 import finance.defi.repository.AuthorityRepository;
 import finance.defi.repository.TrustedDeviceRepository;
 import finance.defi.repository.UserRepository;
+import finance.defi.repository.WalletRepository;
 import finance.defi.security.AuthoritiesConstants;
 import finance.defi.security.SecurityUtils;
 import finance.defi.service.dto.Disable2faDTO;
@@ -61,14 +63,18 @@ public class UserService {
 
     private final TrustedDeviceRepository trustedDeviceRepository;
 
+    private final WalletRepository walletRepository;
+
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AuthorityRepository authorityRepository,
-                       TrustedDeviceRepository trustedDeviceRepository) {
+                       TrustedDeviceRepository trustedDeviceRepository,
+                       WalletRepository walletRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.trustedDeviceRepository = trustedDeviceRepository;
+        this.walletRepository = walletRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -105,7 +111,7 @@ public class UserService {
             });
     }
 
-    public User registerUser(HttpServletRequest request, UserDTO userDTO, String password) {
+    public User registerUser(HttpServletRequest request, UserDTO userDTO, String password, String address) {
         userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).ifPresent(existingUser -> {
             boolean removed = removeNonActivatedUser(existingUser);
             if (!removed) {
@@ -137,11 +143,24 @@ public class UserService {
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
 
+        // save address to wallet
+        this.saveAddress(address, newUser);
+
         // save trusted device for a new user
         this.saveTrustedDevice(request, newUser);
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
+    }
+
+    private void saveAddress(String address, User newUser) {
+
+        Wallet wallet = new Wallet();
+        wallet.setAddress(address);
+        wallet.setCreatedAt(Instant.now());
+        wallet.setUser(newUser);
+
+        walletRepository.save(wallet);
     }
 
     public Optional<User> enableUser2fa() {

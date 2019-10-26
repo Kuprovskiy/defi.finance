@@ -13,14 +13,6 @@ import java.util.Optional;
 public interface WalletService {
 
     /**
-     * Save a wallet.
-     *
-     * @param walletDTO the entity to save.
-     * @return the persisted entity.
-     */
-    WalletDTO save(WalletDTO walletDTO);
-
-    /**
      * Get all the wallets.
      *
      * @param pageable the pagination information.

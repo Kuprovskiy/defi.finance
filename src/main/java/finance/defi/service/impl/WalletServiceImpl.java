@@ -36,24 +36,6 @@ public class WalletServiceImpl implements WalletService {
     }
 
     /**
-     * Save a wallet.
-     *
-     * @param walletDTO the entity to save.
-     * @return the persisted entity.
-     */
-    @Override
-    public WalletDTO save(WalletDTO walletDTO) {
-        log.debug("Request to save Wallet : {}", walletDTO);
-
-        if (walletDTO.getId() != null) {
-            throw new EntityNotFoundException("Can not change wallet");
-        }
-        Wallet wallet = walletMapper.toEntity(walletDTO);
-        wallet = walletRepository.save(wallet);
-        return walletMapper.toDto(wallet);
-    }
-
-    /**
      * Get all the wallets.
      *
      * @param pageable the pagination information.
