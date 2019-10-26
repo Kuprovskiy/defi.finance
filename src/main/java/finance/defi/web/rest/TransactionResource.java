@@ -21,6 +21,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -92,10 +93,11 @@ public class TransactionResource {
     }
 
     @PostMapping("/transactions/process")
-    public ResponseEntity<TransactionHashDTO> processRawTransaction(@Valid @RequestBody RawTransactionDTO rawTransactionDTO) throws URISyntaxException {
+    public ResponseEntity<TransactionHashDTO> processRawTransaction(HttpServletRequest request,
+                                                                    @Valid @RequestBody RawTransactionDTO rawTransactionDTO) {
         log.debug("REST request to proceed rawTransactionDTO : {}", rawTransactionDTO);
 
-        TransactionHashDTO txHash = transactionService.processRawTransaction(rawTransactionDTO);
+        TransactionHashDTO txHash = transactionService.processRawTransaction(request, rawTransactionDTO);
         return ResponseEntity.ok().body(txHash);
     }
 }

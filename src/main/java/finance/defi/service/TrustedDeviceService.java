@@ -1,11 +1,13 @@
 package finance.defi.service;
 
+import finance.defi.domain.TrustedDevice;
 import finance.defi.domain.User;
 import finance.defi.service.dto.TrustedDeviceDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Service Interface for managing {@link finance.defi.domain.TrustedDevice}.
@@ -36,4 +38,6 @@ public interface TrustedDeviceService {
     void delete(Long id);
 
     void validateTrustDevice(HttpServletRequest request, User currentUser);
+
+    List<TrustedDevice> findByUserIsCurrentUserAndDeviceAndDeviceOsAndTrustedAndDateAfter(TrustedDeviceDTO trustedDevicesDTO, User user);
 }

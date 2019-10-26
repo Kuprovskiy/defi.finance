@@ -3,15 +3,19 @@ package finance.defi.service.impl;
 import com.google.gson.Gson;
 import finance.defi.domain.Asset;
 import finance.defi.domain.Transaction;
+import finance.defi.domain.TrustedDevice;
 import finance.defi.domain.User;
 import finance.defi.domain.enumeration.TransactionType;
 import finance.defi.repository.AssetRepository;
 import finance.defi.repository.TransactionRepository;
+import finance.defi.security.SecurityUtils;
 import finance.defi.service.TransactionService;
+import finance.defi.service.TrustedDeviceService;
 import finance.defi.service.UserService;
 import finance.defi.service.dto.RawTransactionDTO;
 import finance.defi.service.dto.TransactionDTO;
 import finance.defi.service.dto.TransactionHashDTO;
+import finance.defi.service.dto.TrustedDeviceDTO;
 import finance.defi.service.mapper.TransactionMapper;
 import finance.defi.service.util.ConverterUtil;
 import finance.defi.service.util.TransactionDecoderUtil;
@@ -31,6 +35,7 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.parity.Parity;
 import org.web3j.utils.Convert;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
@@ -62,14 +67,18 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final AssetRepository assetRepository;
 
+    private final TrustedDeviceService trustedDeviceService;
+
     public TransactionServiceImpl(TransactionRepository transactionRepository,
                                   TransactionMapper transactionMapper,
                                   UserService userService,
-                                  AssetRepository assetRepository) {
+                                  AssetRepository assetRepository,
+                                  TrustedDeviceService trustedDeviceService) {
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
         this.userService = userService;
         this.assetRepository = assetRepository;
+        this.trustedDeviceService = trustedDeviceService;
 
         this.service = new HttpService("https://rinkeby.infura.io/v3/4750a8f14c37429687f5229ff94e4e56");
         this.web3j = Web3j.build(this.service);
@@ -117,20 +126,23 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public TransactionHashDTO processRawTransaction(RawTransactionDTO rawTransactionDTO) {
+    public TransactionHashDTO processRawTransaction(HttpServletRequest request,
+                                                    RawTransactionDTO rawTransactionDTO) {
 
         Gson gson = new Gson();
         EthSendTransaction ethSendTx = null;
         RawTransaction encodedRawTx = TransactionDecoderUtil.decode(rawTransactionDTO.getTx());
         BigDecimal amount = new BigDecimal(ConverterUtil.fromWei(encodedRawTx.getValue(), Convert.Unit.ETHER));
 
+        User currentUser = userService.getUserWithAuthorities().orElseThrow(
+            () -> new EntityNotFoundException("User not found"));
+
         //TODO validate 2FA
         //TODO validate balance
         //TODO validate daily transfer limit
-        //TODO validate trusted device
 
-        User currentUser = userService.getUserWithAuthorities().orElseThrow(
-            () -> new EntityNotFoundException("User not found"));
+        // validate trust device
+        validateTrustDevice(request, currentUser);
 
         Asset asset = assetRepository.findByNameAndIsVisible(rawTransactionDTO.getAsset(), true).orElseThrow(
             () -> new EntityNotFoundException("Asset not found"));
@@ -199,5 +211,18 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTxRaw(encodedTx);
 
         save(transaction);
+    }
+
+    private void validateTrustDevice(HttpServletRequest request, User currentUser) {
+        TrustedDeviceDTO newTrustedDevice = SecurityUtils.getCurrentDevice(request, currentUser, false);
+        newTrustedDevice.setCreatedAt(Instant.now().minusSeconds(2592000)); // 2592000 = 1 month
+
+        List<TrustedDevice> trustedDevices =
+            this.trustedDeviceService.findByUserIsCurrentUserAndDeviceAndDeviceOsAndTrustedAndDateAfter(
+                newTrustedDevice,
+                currentUser);
+        if (trustedDevices.size() == 0) {
+            throw new EntityNotFoundException("There is some abnormal activity with your withdrawals. We require you to verify your identity before we can re-enable your withdrawal functionality");
+        }
     }
 }

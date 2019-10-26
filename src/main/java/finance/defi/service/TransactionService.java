@@ -8,6 +8,7 @@ import finance.defi.service.dto.TransactionHashDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public interface TransactionService {
      */
     Optional<TransactionDTO> findOne(Long id);
 
-    TransactionHashDTO processRawTransaction(RawTransactionDTO rawTransactionDTO);
+    TransactionHashDTO processRawTransaction(HttpServletRequest request, RawTransactionDTO rawTransactionDTO);
 
     Page<TransactionDTO> findByUserAndAssetId(Pageable pageable, User user, Long assetId);
 
