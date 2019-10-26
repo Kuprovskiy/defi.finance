@@ -1,6 +1,9 @@
 package finance.defi.web.rest;
 
 import finance.defi.service.TransactionService;
+import finance.defi.service.dto.AssetDTO;
+import finance.defi.service.dto.RawTransactionDTO;
+import finance.defi.service.dto.TransactionHashDTO;
 import finance.defi.web.rest.errors.BadRequestAlertException;
 import finance.defi.service.dto.TransactionDTO;
 
@@ -72,5 +75,13 @@ public class TransactionResource {
         log.debug("REST request to get Transaction : {}", id);
         Optional<TransactionDTO> transactionDTO = transactionService.findOne(id);
         return ResponseUtil.wrapOrNotFound(transactionDTO);
+    }
+
+    @PostMapping("/transactions/process")
+    public ResponseEntity<TransactionHashDTO> processRawTransaction(@Valid @RequestBody RawTransactionDTO rawTransactionDTO) throws URISyntaxException {
+        log.debug("REST request to proceed rawTransactionDTO : {}", rawTransactionDTO);
+
+        TransactionHashDTO txHash = transactionService.processRawTransaction(rawTransactionDTO);
+        return ResponseEntity.ok().body(txHash);
     }
 }

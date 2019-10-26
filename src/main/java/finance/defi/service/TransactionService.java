@@ -1,7 +1,9 @@
 package finance.defi.service;
 
+import finance.defi.domain.Transaction;
+import finance.defi.service.dto.RawTransactionDTO;
 import finance.defi.service.dto.TransactionDTO;
-
+import finance.defi.service.dto.TransactionHashDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,14 +13,6 @@ import java.util.Optional;
  * Service Interface for managing {@link finance.defi.domain.Transaction}.
  */
 public interface TransactionService {
-
-    /**
-     * Save a transaction.
-     *
-     * @param transactionDTO the entity to save.
-     * @return the persisted entity.
-     */
-    TransactionDTO save(TransactionDTO transactionDTO);
 
     /**
      * Get all the transactions.
@@ -36,4 +30,6 @@ public interface TransactionService {
      * @return the entity.
      */
     Optional<TransactionDTO> findOne(Long id);
+
+    TransactionHashDTO processRawTransaction(RawTransactionDTO rawTransactionDTO);
 }

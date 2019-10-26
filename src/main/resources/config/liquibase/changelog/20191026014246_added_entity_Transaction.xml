@@ -32,6 +32,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="tx_raw" type="text">
+                <constraints nullable="false" />
+            </column>
+
             <column name="asset_id" type="bigint">
                 <constraints nullable="false" />
             </column>

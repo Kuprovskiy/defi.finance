@@ -25,7 +25,6 @@ public class TransactionDTO implements Serializable {
     @NotNull
     private String txHash;
 
-
     private Long assetId;
 
     private Long userId;

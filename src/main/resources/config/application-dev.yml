@@ -125,3 +125,6 @@ jhipster:
 # ===================================================================
 
 # application:
+ether:
+  network:
+    provider: https://rinkeby.infura.io/v3/4750a8f14c37429687f5229ff94e4e56

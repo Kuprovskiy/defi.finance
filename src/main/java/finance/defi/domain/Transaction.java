@@ -40,6 +40,10 @@ public class Transaction implements Serializable {
     @Column(name = "tx_hash", nullable = false)
     private String txHash;
 
+    @NotNull
+    @Column(name = "tx_raw", nullable = false)
+    private String txRaw;
+
     @ManyToOne(optional = false)
     @NotNull
     private Asset asset;
@@ -112,6 +116,14 @@ public class Transaction implements Serializable {
 
     public void setTxHash(String txHash) {
         this.txHash = txHash;
+    }
+
+    public String getTxRaw() {
+        return txRaw;
+    }
+
+    public void setTxRaw(String txRaw) {
+        this.txRaw = txRaw;
     }
 
     public Asset getAsset() {
