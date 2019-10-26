@@ -4,14 +4,10 @@ import finance.defi.domain.User;
 import finance.defi.domain.enumeration.TransactionType;
 import finance.defi.service.TransactionService;
 import finance.defi.service.UserService;
-import finance.defi.service.dto.AssetDTO;
 import finance.defi.service.dto.RawTransactionDTO;
-import finance.defi.service.dto.TransactionHashDTO;
-import finance.defi.web.rest.errors.BadRequestAlertException;
 import finance.defi.service.dto.TransactionDTO;
-
+import finance.defi.service.dto.TransactionHashDTO;
 import finance.defi.web.rest.errors.EntityNotFoundException;
-import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -20,17 +16,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 

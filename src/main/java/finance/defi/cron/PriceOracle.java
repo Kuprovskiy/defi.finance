@@ -9,7 +9,6 @@ import finance.defi.repository.AccountBalanceRepository;
 import finance.defi.repository.AssetRepository;
 import finance.defi.repository.WalletRepository;
 import finance.defi.service.WalletService;
-import finance.defi.service.dto.AccountBalanceDTO;
 import finance.defi.service.dto.coin_market_cap.CoinMarketCapApi;
 import finance.defi.service.dto.coin_market_cap.CryptoCurrency;
 import finance.defi.web.rest.errors.EntityNotFoundException;

@@ -1,18 +1,17 @@
 package finance.defi.service.impl;
 
+import finance.defi.domain.TrustedDevice;
 import finance.defi.domain.User;
+import finance.defi.repository.TrustedDeviceRepository;
 import finance.defi.security.SecurityUtils;
 import finance.defi.service.MailService;
 import finance.defi.service.TrustedDeviceService;
-import finance.defi.domain.TrustedDevice;
-import finance.defi.repository.TrustedDeviceRepository;
 import finance.defi.service.UserService;
 import finance.defi.service.dto.TrustedDeviceDTO;
 import finance.defi.service.mapper.TrustedDeviceMapper;
 import finance.defi.web.rest.errors.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service Implementation for managing {@link TrustedDevice}.

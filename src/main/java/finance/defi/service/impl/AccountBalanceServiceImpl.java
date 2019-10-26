@@ -1,26 +1,19 @@
 package finance.defi.service.impl;
 
+import finance.defi.domain.AccountBalance;
 import finance.defi.domain.Asset;
-import finance.defi.domain.User;
 import finance.defi.domain.enumeration.BalanceType;
+import finance.defi.repository.AccountBalanceRepository;
 import finance.defi.repository.AssetRepository;
 import finance.defi.service.AccountBalanceService;
-import finance.defi.domain.AccountBalance;
-import finance.defi.repository.AccountBalanceRepository;
-import finance.defi.service.UserService;
-import finance.defi.service.dto.AccountBalanceDTO;
 import finance.defi.service.dto.AccountTotalBalanceDTO;
 import finance.defi.service.dto.BalanceDTO;
 import finance.defi.service.mapper.AccountBalanceMapper;
-import finance.defi.web.rest.AccountResource;
 import finance.defi.web.rest.errors.BadRequestAlertException;
-import finance.defi.web.rest.errors.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Service Implementation for managing {@link AccountBalance}.

@@ -1,9 +1,7 @@
 package finance.defi;
 
-import com.google.gson.Gson;
 import finance.defi.config.ApplicationProperties;
 import finance.defi.config.DefaultProfileUtil;
-import finance.defi.service.util.TransactionDecoderUtil;
 import io.github.jhipster.config.JHipsterConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,7 +12,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
-import org.web3j.crypto.RawTransaction;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

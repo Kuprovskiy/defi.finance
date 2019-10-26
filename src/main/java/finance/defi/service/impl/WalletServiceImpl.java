@@ -2,18 +2,16 @@ package finance.defi.service.impl;
 
 import finance.defi.contracts.DaiCErc20;
 import finance.defi.contracts.UsdcCErc20;
-import finance.defi.security.SecurityUtils;
-import finance.defi.service.WalletService;
 import finance.defi.domain.Wallet;
 import finance.defi.repository.WalletRepository;
+import finance.defi.security.SecurityUtils;
+import finance.defi.service.WalletService;
 import finance.defi.service.dto.WalletDTO;
 import finance.defi.service.mapper.WalletMapper;
 import finance.defi.service.util.ConverterUtil;
-import finance.defi.web.rest.errors.BadRequestAlertException;
 import finance.defi.web.rest.errors.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

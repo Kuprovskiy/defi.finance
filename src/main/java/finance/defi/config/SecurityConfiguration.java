@@ -1,10 +1,8 @@
 package finance.defi.config;
 
-import finance.defi.security.*;
-import finance.defi.security.jwt.*;
-
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.InitializingBean;
+import finance.defi.security.AuthoritiesConstants;
+import finance.defi.security.jwt.JWTConfigurer;
+import finance.defi.security.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;

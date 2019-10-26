@@ -1,6 +1,5 @@
 package finance.defi.service;
 
-import finance.defi.domain.Transaction;
 import finance.defi.domain.User;
 import finance.defi.domain.enumeration.TransactionType;
 import finance.defi.service.dto.RawTransactionDTO;

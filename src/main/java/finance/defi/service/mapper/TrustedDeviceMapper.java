@@ -1,9 +1,9 @@
 package finance.defi.service.mapper;
 
-import finance.defi.domain.*;
+import finance.defi.domain.TrustedDevice;
 import finance.defi.service.dto.TrustedDeviceDTO;
-
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Mapper for the entity {@link TrustedDevice} and its DTO {@link TrustedDeviceDTO}.

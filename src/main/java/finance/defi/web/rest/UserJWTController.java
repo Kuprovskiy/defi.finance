@@ -1,5 +1,6 @@
 package finance.defi.web.rest;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import finance.defi.domain.User;
 import finance.defi.security.jwt.JWTFilter;
 import finance.defi.security.jwt.TokenProvider;
@@ -8,9 +9,6 @@ import finance.defi.service.UserService;
 import finance.defi.service.util.NumberUtil;
 import finance.defi.web.rest.errors.EntityNotFoundException;
 import finance.defi.web.rest.vm.LoginVM;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import finance.defi.web.rest.vm.PhoneVM;
 import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +19,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;

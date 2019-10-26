@@ -2,12 +2,12 @@ package finance.defi.service.impl;
 
 import com.google.gson.Gson;
 import finance.defi.domain.Asset;
+import finance.defi.domain.Transaction;
 import finance.defi.domain.User;
 import finance.defi.domain.enumeration.TransactionType;
 import finance.defi.repository.AssetRepository;
-import finance.defi.service.TransactionService;
-import finance.defi.domain.Transaction;
 import finance.defi.repository.TransactionRepository;
+import finance.defi.service.TransactionService;
 import finance.defi.service.UserService;
 import finance.defi.service.dto.RawTransactionDTO;
 import finance.defi.service.dto.TransactionDTO;
@@ -18,32 +18,23 @@ import finance.defi.service.util.TransactionDecoderUtil;
 import finance.defi.web.rest.errors.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.protocol.parity.Parity;
-import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 
-import javax.persistence.metamodel.SingularAttribute;
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-
-import static finance.defi.domain.Transaction_.amount;
-import static finance.defi.domain.Transaction_.asset;
 
 /**
  * Service Implementation for managing {@link Transaction}.

@@ -1,9 +1,9 @@
 package finance.defi.service.mapper;
 
-import finance.defi.domain.*;
+import finance.defi.domain.Wallet;
 import finance.defi.service.dto.WalletDTO;
-
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Mapper for the entity {@link Wallet} and its DTO {@link WalletDTO}.
