@@ -1,10 +1,12 @@
 package finance.defi.service;
 
+import finance.defi.domain.Wallet;
 import finance.defi.service.dto.WalletDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 /**
@@ -27,4 +29,12 @@ public interface WalletService {
      * @return the entity.
      */
     Optional<WalletDTO> findOne(Long id);
+
+    BigDecimal balanceOf(Wallet wallet);
+
+    BigDecimal usdcBalanceOf(Wallet wallet);
+
+    BigDecimal daiBalanceOf(Wallet wallet);
+
+    BigDecimal balanceOfUnderlying(Wallet wallet, String asset);
 }

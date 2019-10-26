@@ -13,6 +13,11 @@ public final class Constants {
     public static final String DEFAULT_LANGUAGE = "en";
     public static final String ANONYMOUS_USER = "anonymoususer";
 
+    public static final String ETH = "ETH";
+    public static final String DAI = "DAI";
+    public static final String USDC = "USDC";
+    public static final String BAT = "BAT";
+
     private Constants() {
     }
 }
