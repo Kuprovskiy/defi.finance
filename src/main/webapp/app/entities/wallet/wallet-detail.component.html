@@ -1,0 +1,35 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="wallet">
+            <h2><span>Wallet</span> {{wallet.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Address</span></dt>
+                <dd>
+                    <span>{{wallet.address}}</span>
+                </dd>
+                <dt><span>Created At</span></dt>
+                <dd>
+                    <span>{{wallet.createdAt}}</span>
+                </dd>
+                <dt><span>User</span></dt>
+                <dd>
+                    {{wallet.userLogin}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/wallet', wallet.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
