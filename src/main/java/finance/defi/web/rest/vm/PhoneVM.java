@@ -18,6 +18,8 @@ public class PhoneVM {
 
     private Boolean rememberMe;
 
+    private String code;
+
     public String getPhone() {
         return phone;
     }
@@ -40,6 +42,14 @@ public class PhoneVM {
 
     public void setRememberMe(Boolean rememberMe) {
         this.rememberMe = rememberMe;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     @Override

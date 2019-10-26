@@ -5,15 +5,18 @@ import finance.defi.security.jwt.JWTFilter;
 import finance.defi.security.jwt.TokenProvider;
 import finance.defi.service.TrustedDeviceService;
 import finance.defi.service.UserService;
+import finance.defi.service.util.NumberUtil;
 import finance.defi.web.rest.errors.EntityNotFoundException;
 import finance.defi.web.rest.vm.LoginVM;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import finance.defi.web.rest.vm.PhoneVM;
+import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -54,6 +57,7 @@ public class UserJWTController {
         loginVM.setUsername(phoneVM.getPhone());
         loginVM.setPassword(phoneVM.getPassword());
         loginVM.setRememberMe(phoneVM.isRememberMe());
+        loginVM.setCode(phoneVM.getCode());
         return authorize(request, loginVM);
     }
 
@@ -62,6 +66,14 @@ public class UserJWTController {
 
         User currentUser = userService.getUserWithAuthoritiesByLogin(loginVM.getUsername()).orElseThrow(
             () -> new EntityNotFoundException("User not found"));
+
+        // validate google 2FA
+        if (currentUser.getUsing2FA()) {
+            Totp totp = new Totp(currentUser.getSecret2fa());
+            if (!NumberUtil.isValidLong(loginVM.getCode()) || !totp.verify(loginVM.getCode())) {
+                throw new BadCredentialsException("Invalid verification code");
+            }
+        }
 
         // validate trust device
         validateTrustDevice(request, currentUser);
