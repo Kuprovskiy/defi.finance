@@ -1,10 +1,8 @@
 package finance.defi.service.impl;
 
 import com.google.gson.Gson;
-import finance.defi.domain.Asset;
-import finance.defi.domain.Transaction;
-import finance.defi.domain.TrustedDevice;
-import finance.defi.domain.User;
+import finance.defi.config.Constants;
+import finance.defi.domain.*;
 import finance.defi.domain.enumeration.TransactionType;
 import finance.defi.repository.AssetRepository;
 import finance.defi.repository.TransactionRepository;
@@ -12,6 +10,7 @@ import finance.defi.security.SecurityUtils;
 import finance.defi.service.TransactionService;
 import finance.defi.service.TrustedDeviceService;
 import finance.defi.service.UserService;
+import finance.defi.service.WalletService;
 import finance.defi.service.dto.RawTransactionDTO;
 import finance.defi.service.dto.TransactionDTO;
 import finance.defi.service.dto.TransactionHashDTO;
@@ -69,16 +68,20 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TrustedDeviceService trustedDeviceService;
 
+    private final WalletService walletService;
+
     public TransactionServiceImpl(TransactionRepository transactionRepository,
                                   TransactionMapper transactionMapper,
                                   UserService userService,
                                   AssetRepository assetRepository,
-                                  TrustedDeviceService trustedDeviceService) {
+                                  TrustedDeviceService trustedDeviceService,
+                                  WalletService walletService) {
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
         this.userService = userService;
         this.assetRepository = assetRepository;
         this.trustedDeviceService = trustedDeviceService;
+        this.walletService = walletService;
 
         this.service = new HttpService("https://rinkeby.infura.io/v3/4750a8f14c37429687f5229ff94e4e56");
         this.web3j = Web3j.build(this.service);
@@ -137,19 +140,25 @@ public class TransactionServiceImpl implements TransactionService {
         User currentUser = userService.getUserWithAuthorities().orElseThrow(
             () -> new EntityNotFoundException("User not found"));
 
+        Wallet wallet = walletService.findByCurrentUser();
+        if (wallet == null) {
+            throw new EntityNotFoundException("wallet not found");
+        }
+
         //TODO validate 2FA
-        //TODO validate balance
         //TODO validate daily transfer limit
 
         // validate trust device
         validateTrustDevice(request, currentUser);
+
+        // validate balance
+        validateBalance(wallet, amount, rawTransactionDTO.getAsset());
 
         Asset asset = assetRepository.findByNameAndIsVisible(rawTransactionDTO.getAsset(), true).orElseThrow(
             () -> new EntityNotFoundException("Asset not found"));
 
         // send the signed transaction to the ethereum client
         try {
-            log.info(rawTransactionDTO.getTx());
             ethSendTx = web3j
                 .ethSendRawTransaction(rawTransactionDTO.getTx())
                 .sendAsync()
@@ -224,5 +233,34 @@ public class TransactionServiceImpl implements TransactionService {
         if (trustedDevices.size() == 0) {
             throw new EntityNotFoundException("There is some abnormal activity with your withdrawals. We require you to verify your identity before we can re-enable your withdrawal functionality");
         }
+    }
+
+    private void validateBalance(Wallet wallet, BigDecimal amount, String asset) {
+
+        BigDecimal balance = getBalance(wallet, asset);
+        log.info("-----------------------------------");
+        log.info("balance: " + balance.toString());
+        log.info("amount: " + amount);
+        if (balance.compareTo(amount) == -1) {
+            throw new EntityNotFoundException("Balance is not enough");
+        }
+    }
+
+    private BigDecimal getBalance(Wallet wallet, String asset) {
+
+        BigDecimal balance = BigDecimal.ZERO;
+        switch (asset) {
+            case Constants.ETH:
+                balance = walletService.ethBalanceOf(wallet);
+                break;
+            case Constants.USDC:
+                balance = walletService.usdcBalanceOf(wallet);
+                break;
+            case Constants.DAI:
+                balance = walletService.daiBalanceOf(wallet);
+                break;
+        }
+
+        return balance;
     }
 }

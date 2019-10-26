@@ -61,7 +61,7 @@ public class PriceOracle {
         this.walletService = walletService;
     }
 
-    @Scheduled(cron = "* 1 * * * ?")
+//    @Scheduled(cron = "* 1 * * * ?")
     public void priceOracleSync() {
 
         Asset usdc = assetRepository.findByNameAndIsVisible(Constants.USDC, true).orElseThrow(
@@ -103,7 +103,7 @@ public class PriceOracle {
      * <p>
      * This is scheduled to get fired every hour.
      */
-    @Scheduled(cron = "1 * * * * ?")
+//    @Scheduled(cron = "1 * * * * ?")
     public void syncBalancesWithNode() {
         log.debug("Start synchronization balance with smart contract: {}");
 
@@ -149,7 +149,7 @@ public class PriceOracle {
                 AccountBalance ethBalance = accountBalanceRepository.findByUserAndAssetAndBalanceType(wallet.getUser(), eth, BalanceType.WALLET)
                     .orElseGet(() -> new AccountBalance());
                 ethBalance.setAsset(eth);
-                ethBalance.setBalanceAmount(walletService.balanceOf(wallet));
+                ethBalance.setBalanceAmount(walletService.ethBalanceOf(wallet));
                 ethBalance.setBalanceType(BalanceType.WALLET);
                 ethBalance.setUser(wallet.getUser());
                 ethBalance.setCreatedAt(Instant.now());
@@ -166,7 +166,7 @@ public class PriceOracle {
      * <p>
      * This is scheduled to get fired every hour.
      */
-    @Scheduled(cron = "1 * * * * ?")
+//    @Scheduled(cron = "1 * * * * ?")
     public void syncBalancesOfUnderlyingWithNode() {
         log.debug("Start synchronization balance of underlying with smart contract: {}");
 

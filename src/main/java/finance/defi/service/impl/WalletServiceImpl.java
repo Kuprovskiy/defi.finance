@@ -117,7 +117,7 @@ public class WalletServiceImpl implements WalletService {
         return (addressList.size() > 0) ? addressList.get(0) : null;
     }
 
-    public BigDecimal balanceOf(Wallet wallet) {
+    public BigDecimal ethBalanceOf(Wallet wallet) {
 
         BigDecimal balance = BigDecimal.ZERO;
         try {

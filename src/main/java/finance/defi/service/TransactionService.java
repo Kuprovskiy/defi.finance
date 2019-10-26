@@ -34,7 +34,7 @@ public interface TransactionService {
      */
     Optional<TransactionDTO> findOne(Long id);
 
-    TransactionHashDTO processRawTransaction(HttpServletRequest request, RawTransactionDTO rawTransactionDTO);
+    TransactionHashDTO  processRawTransaction(HttpServletRequest request, RawTransactionDTO rawTransactionDTO);
 
     Page<TransactionDTO> findByUserAndAssetId(Pageable pageable, User user, Long assetId);
 

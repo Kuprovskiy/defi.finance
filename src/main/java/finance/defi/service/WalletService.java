@@ -29,7 +29,7 @@ public interface WalletService {
      */
     Optional<WalletDTO> findOne(Long id);
 
-    BigDecimal balanceOf(Wallet wallet);
+    BigDecimal ethBalanceOf(Wallet wallet);
 
     BigDecimal usdcBalanceOf(Wallet wallet);
 
