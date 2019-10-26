@@ -1,0 +1,53 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="transaction">
+            <h2><span>Transaction</span> {{transaction.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Amount</span></dt>
+                <dd>
+                    <span>{{transaction.amount}}</span>
+                </dd>
+                <dt><span>Created At</span></dt>
+                <dd>
+                    <span>{{transaction.createdAt}}</span>
+                </dd>
+                <dt><span>Transaction Type</span></dt>
+                <dd>
+                    <span>{{transaction.transactionType}}</span>
+                </dd>
+                <dt><span>Tx Hash</span></dt>
+                <dd>
+                    <span>{{transaction.txHash}}</span>
+                </dd>
+                <dt><span>Asset</span></dt>
+                <dd>
+                    <div *ngIf="transaction.assetId">
+                        <a [routerLink]="['/asset', transaction.assetId, 'view']">{{transaction.assetId}}</a>
+                    </div>
+                </dd>
+                <dt><span>User</span></dt>
+                <dd>
+                    {{transaction.userLogin}}
+                </dd>
+                <dt><span>Recipient</span></dt>
+                <dd>
+                    {{transaction.recipientLogin}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/transaction', transaction.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
