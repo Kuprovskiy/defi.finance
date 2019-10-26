@@ -6,6 +6,7 @@ import finance.defi.domain.Asset;
 import finance.defi.domain.User;
 import finance.defi.repository.TransactionRepository;
 import finance.defi.service.TransactionService;
+import finance.defi.service.UserService;
 import finance.defi.service.dto.TransactionDTO;
 import finance.defi.service.mapper.TransactionMapper;
 import finance.defi.web.rest.errors.ExceptionTranslator;
@@ -66,6 +67,9 @@ public class TransactionResourceIT {
     private TransactionService transactionService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -87,7 +91,7 @@ public class TransactionResourceIT {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final TransactionResource transactionResource = new TransactionResource(transactionService);
+        final TransactionResource transactionResource = new TransactionResource(transactionService, userService);
         this.restTransactionMockMvc = MockMvcBuilders.standaloneSetup(transactionResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

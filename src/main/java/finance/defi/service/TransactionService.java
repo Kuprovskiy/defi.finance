@@ -1,12 +1,15 @@
 package finance.defi.service;
 
 import finance.defi.domain.Transaction;
+import finance.defi.domain.User;
+import finance.defi.domain.enumeration.TransactionType;
 import finance.defi.service.dto.RawTransactionDTO;
 import finance.defi.service.dto.TransactionDTO;
 import finance.defi.service.dto.TransactionHashDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,4 +35,10 @@ public interface TransactionService {
     Optional<TransactionDTO> findOne(Long id);
 
     TransactionHashDTO processRawTransaction(RawTransactionDTO rawTransactionDTO);
+
+    Page<TransactionDTO> findByUserAndAssetId(Pageable pageable, User user, Long assetId);
+
+    Page<TransactionDTO> findByUserAndType(Pageable pageable, User user, List<TransactionType> types);
+
+    Page<TransactionDTO> findByUser(Pageable pageable, User user);
 }

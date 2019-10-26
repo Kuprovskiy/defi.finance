@@ -1,12 +1,16 @@
 package finance.defi.web.rest;
 
+import finance.defi.domain.User;
+import finance.defi.domain.enumeration.TransactionType;
 import finance.defi.service.TransactionService;
+import finance.defi.service.UserService;
 import finance.defi.service.dto.AssetDTO;
 import finance.defi.service.dto.RawTransactionDTO;
 import finance.defi.service.dto.TransactionHashDTO;
 import finance.defi.web.rest.errors.BadRequestAlertException;
 import finance.defi.service.dto.TransactionDTO;
 
+import finance.defi.web.rest.errors.EntityNotFoundException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -17,9 +21,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -44,8 +50,12 @@ public class TransactionResource {
 
     private final TransactionService transactionService;
 
-    public TransactionResource(TransactionService transactionService) {
+    private final UserService userService;
+
+    public TransactionResource(TransactionService transactionService,
+                               UserService userService) {
         this.transactionService = transactionService;
+        this.userService = userService;
     }
 
     /**
@@ -57,10 +67,22 @@ public class TransactionResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of transactions in body.
      */
     @GetMapping("/transactions")
-    public ResponseEntity<List<TransactionDTO>> getAllTransactions(Pageable pageable) {
+    public ResponseEntity<List<TransactionDTO>> getAllTransactions(Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder, @RequestParam(value = "assetId", required = false) Long assetId, @RequestParam(value = "type", required = false) List<TransactionType> types) {
         log.debug("REST request to get a page of Transactions");
-        Page<TransactionDTO> page = transactionService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+
+        User currentUser = userService.getUserWithAuthorities().orElseThrow(
+            () -> new EntityNotFoundException("User not found"));
+
+        Page<TransactionDTO> page = null;
+        if (assetId != null) {
+            page = transactionService.findByUserAndAssetId(pageable, currentUser, assetId);
+        } else if (types != null && types.size() > 0) {
+            page = transactionService.findByUserAndType(pageable, currentUser, types);
+        } else {
+            page = transactionService.findByUser(pageable, currentUser);
+        }
+
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 

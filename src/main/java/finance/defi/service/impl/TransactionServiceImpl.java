@@ -39,6 +39,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import static finance.defi.domain.Transaction_.amount;
@@ -110,7 +111,6 @@ public class TransactionServiceImpl implements TransactionService {
             .map(transactionMapper::toDto);
     }
 
-
     /**
      * Get one transaction by id.
      *
@@ -168,6 +168,27 @@ public class TransactionServiceImpl implements TransactionService {
             log.error(e.getMessage());
         }
         return new TransactionHashDTO(ethSendTx.getTransactionHash());
+    }
+
+    public Page<TransactionDTO> findByUserAndAssetId(Pageable pageable, User user, Long assetId) {
+        log.debug("find by assetId: {}, page: {}", assetId, pageable);
+
+        return transactionRepository.findByUserAndAssetOrderByIdDesc(pageable, user, assetId)
+            .map(transactionMapper::toDto);
+    }
+
+    public Page<TransactionDTO> findByUserAndType(Pageable pageable, User user, List<TransactionType> types) {
+        log.debug("find by user and type: {}", pageable);
+
+        return transactionRepository.findByUserAndTransactionTypeInOrderByIdDesc(pageable, user, types)
+            .map(transactionMapper::toDto);
+    }
+
+    public Page<TransactionDTO> findByUser(Pageable pageable, User user) {
+        log.debug("find by page: {}", pageable);
+
+        return transactionRepository.findByUserOrderByIdDesc(pageable, user)
+            .map(transactionMapper::toDto);
     }
 
     private void saveTransaction(BigDecimal amount,
