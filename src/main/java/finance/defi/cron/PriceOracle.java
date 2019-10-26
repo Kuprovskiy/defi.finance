@@ -104,7 +104,7 @@ public class PriceOracle {
      * <p>
      * This is scheduled to get fired every hour.
      */
-    @Scheduled(cron = "* 1 * * * ?")
+    @Scheduled(cron = "1 * * * * ?")
     public void syncBalancesWithNode() {
         log.debug("Start synchronization balance with smart contract: {}");
 
@@ -119,9 +119,9 @@ public class PriceOracle {
             .findAll()
             .forEach(wallet -> {
                 log.debug("Sync balance for wallet {}", wallet.getUser().getLogin());
-
+                log.info("-----------------------------------------------------");
                 // save USDC
-                AccountBalance usdcBalance = accountBalanceRepository.findByUserAndAsset(wallet.getUser(), usdc)
+                AccountBalance usdcBalance = accountBalanceRepository.findByUserAndAssetAndBalanceType(wallet.getUser(), usdc, BalanceType.WALLET)
                     .orElseGet(() -> new AccountBalance());
                 usdcBalance.setAsset(usdc);
                 usdcBalance.setBalanceAmount(walletService.usdcBalanceOf(wallet));
@@ -131,9 +131,10 @@ public class PriceOracle {
                 usdcBalance.setUpdatedAt(Instant.now());
 
                 accountBalanceRepository.save(usdcBalance);
+                log.info("usdcBalance: " + usdcBalance.toString());
 
                 // save DAI
-                AccountBalance daiBalance = accountBalanceRepository.findByUserAndAsset(wallet.getUser(), dai)
+                AccountBalance daiBalance = accountBalanceRepository.findByUserAndAssetAndBalanceType(wallet.getUser(), dai, BalanceType.WALLET)
                     .orElseGet(() -> new AccountBalance());
                 daiBalance.setAsset(dai);
                 daiBalance.setBalanceAmount(walletService.daiBalanceOf(wallet));
@@ -143,9 +144,10 @@ public class PriceOracle {
                 daiBalance.setUpdatedAt(Instant.now());
 
                 accountBalanceRepository.save(daiBalance);
+                log.info("daiBalance: " + daiBalance.toString());
 
                 // save DAI
-                AccountBalance ethBalance = accountBalanceRepository.findByUserAndAsset(wallet.getUser(), eth)
+                AccountBalance ethBalance = accountBalanceRepository.findByUserAndAssetAndBalanceType(wallet.getUser(), eth, BalanceType.WALLET)
                     .orElseGet(() -> new AccountBalance());
                 ethBalance.setAsset(eth);
                 ethBalance.setBalanceAmount(walletService.balanceOf(wallet));
@@ -155,6 +157,7 @@ public class PriceOracle {
                 ethBalance.setUpdatedAt(Instant.now());
 
                 accountBalanceRepository.save(ethBalance);
+                log.info("ethBalance: " + ethBalance.toString());
             });
         log.debug("End synchronization balance with smart contract: {}");
     }
@@ -164,7 +167,7 @@ public class PriceOracle {
      * <p>
      * This is scheduled to get fired every hour.
      */
-    @Scheduled(cron = "* 1 * * * ?")
+    @Scheduled(cron = "1 * * * * ?")
     public void syncBalancesOfUnderlyingWithNode() {
         log.debug("Start synchronization balance of underlying with smart contract: {}");
 
@@ -181,7 +184,7 @@ public class PriceOracle {
                 log.debug("Sync balance of underlying for wallet {}", wallet.getUser().getLogin());
 
                 // save USDC
-                AccountBalance usdcBalance = accountBalanceRepository.findByUserAndAsset(wallet.getUser(), usdc)
+                AccountBalance usdcBalance = accountBalanceRepository.findByUserAndAssetAndBalanceType(wallet.getUser(), usdc, BalanceType.SUPPLY)
                     .orElseGet(() -> new AccountBalance());
                 usdcBalance.setAsset(usdc);
                 usdcBalance.setBalanceAmount(walletService.balanceOfUnderlying(wallet, usdc.getName()));
@@ -195,7 +198,7 @@ public class PriceOracle {
                 accountBalanceRepository.save(usdcBalance);
 
                 // save DAI
-                AccountBalance daiBalance = accountBalanceRepository.findByUserAndAsset(wallet.getUser(), dai)
+                AccountBalance daiBalance = accountBalanceRepository.findByUserAndAssetAndBalanceType(wallet.getUser(), dai, BalanceType.SUPPLY)
                     .orElseGet(() -> new AccountBalance());
                 daiBalance.setAsset(dai);
                 daiBalance.setBalanceAmount(walletService.balanceOfUnderlying(wallet, dai.getName()));
@@ -209,7 +212,7 @@ public class PriceOracle {
                 accountBalanceRepository.save(daiBalance);
 
                 // save ETH
-                AccountBalance ethBalance = accountBalanceRepository.findByUserAndAsset(wallet.getUser(), eth)
+                AccountBalance ethBalance = accountBalanceRepository.findByUserAndAssetAndBalanceType(wallet.getUser(), eth, BalanceType.SUPPLY)
                     .orElseGet(() -> new AccountBalance());
                 ethBalance.setAsset(eth);
                 ethBalance.setBalanceAmount(walletService.balanceOfUnderlying(wallet, eth.getName()));

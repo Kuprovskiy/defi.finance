@@ -3,6 +3,7 @@ package finance.defi.repository;
 import finance.defi.domain.AccountBalance;
 import finance.defi.domain.Asset;
 import finance.defi.domain.User;
+import finance.defi.domain.enumeration.BalanceType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -20,5 +21,5 @@ public interface AccountBalanceRepository extends JpaRepository<AccountBalance, 
     @Query("select accountBalance from AccountBalance accountBalance where accountBalance.user.login = ?#{principal.username}")
     Page<AccountBalance> findByUserIsCurrentUser(Pageable pageable);
 
-    Optional<AccountBalance> findByUserAndAsset(User user, Asset asset);
+    Optional<AccountBalance> findByUserAndAssetAndBalanceType(User user, Asset asset, BalanceType balanceType);
 }
