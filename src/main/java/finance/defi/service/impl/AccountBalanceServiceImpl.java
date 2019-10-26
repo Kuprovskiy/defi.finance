@@ -70,7 +70,7 @@ public class AccountBalanceServiceImpl implements AccountBalanceService {
         User currentUser = userService.getUserWithAuthorities().orElseThrow(
             () -> new EntityNotFoundException("User not found"));
 
-        Asset baseAsset = assetRepository.findById(currentUser.getId()).orElseThrow(
+        Asset baseAsset = assetRepository.findById(currentUser.getBaseAsset()).orElseThrow(
             () -> new EntityNotFoundException("Asset not found"));
 
         Page<AccountBalance> accountBalances = accountBalanceRepository.findByUserIsCurrentUser(new PageRequest(0, 9));
