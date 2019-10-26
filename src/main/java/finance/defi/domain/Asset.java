@@ -1,5 +1,7 @@
 package finance.defi.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -39,6 +41,7 @@ public class Asset implements Serializable {
 
     @NotNull
     @Column(name = "is_visible", nullable = false)
+    @JsonIgnore
     private Boolean isVisible;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

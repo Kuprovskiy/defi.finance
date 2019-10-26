@@ -18,9 +18,11 @@
     <include file="config/liquibase/changelog/20191025215607_added_entity_TrustedDevice.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191026010727_added_entity_Wallet.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191026014246_added_entity_Transaction.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191026021620_added_entity_AccountBalance.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20191025215607_added_entity_constraints_TrustedDevice.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191026010727_added_entity_constraints_Wallet.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191026014246_added_entity_constraints_Transaction.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191026021620_added_entity_constraints_AccountBalance.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

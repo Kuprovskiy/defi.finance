@@ -1,0 +1,49 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="accountBalance">
+            <h2><span>Account Balance</span> {{accountBalance.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Balance Amount</span></dt>
+                <dd>
+                    <span>{{accountBalance.balanceAmount}}</span>
+                </dd>
+                <dt><span>Created At</span></dt>
+                <dd>
+                    <span>{{accountBalance.createdAt}}</span>
+                </dd>
+                <dt><span>Updated At</span></dt>
+                <dd>
+                    <span>{{accountBalance.updatedAt}}</span>
+                </dd>
+                <dt><span>Balance Type</span></dt>
+                <dd>
+                    <span>{{accountBalance.balanceType}}</span>
+                </dd>
+                <dt><span>Asset</span></dt>
+                <dd>
+                    <div *ngIf="accountBalance.assetId">
+                        <a [routerLink]="['/asset', accountBalance.assetId, 'view']">{{accountBalance.assetId}}</a>
+                    </div>
+                </dd>
+                <dt><span>User</span></dt>
+                <dd>
+                    {{accountBalance.userLogin}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/account-balance', accountBalance.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
