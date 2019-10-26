@@ -57,7 +57,7 @@ public class AssetServiceImpl implements AssetService {
     @Transactional(readOnly = true)
     public Page<AssetDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Assets");
-        return assetRepository.findAll(pageable)
+        return assetRepository.findByIsVisibleTrue(pageable)
             .map(assetMapper::toDto);
     }
 
