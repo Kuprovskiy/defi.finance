@@ -9,6 +9,7 @@ import finance.defi.repository.UserRepository;
 import finance.defi.security.AuthoritiesConstants;
 import finance.defi.service.MailService;
 import finance.defi.service.UserService;
+import finance.defi.service.WalletService;
 import finance.defi.service.dto.PasswordChangeDTO;
 import finance.defi.service.dto.UserDTO;
 import finance.defi.web.rest.errors.ExceptionTranslator;
@@ -56,6 +57,9 @@ public class AccountResourceIT {
     private UserService userService;
 
     @Autowired
+    private WalletService walletService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -79,10 +83,10 @@ public class AccountResourceIT {
         MockitoAnnotations.initMocks(this);
         doNothing().when(mockMailService).sendActivationEmail(any());
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, mockMailService);
+            new AccountResource(userRepository, userService, mockMailService, walletService);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockMailService);
+            new AccountResource(userRepository, mockUserService, mockMailService, walletService);
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource)
             .setMessageConverters(httpMessageConverters)
             .setControllerAdvice(exceptionTranslator)

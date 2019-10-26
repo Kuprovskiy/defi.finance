@@ -2,10 +2,12 @@ package finance.defi.web.rest;
 
 
 import finance.defi.domain.User;
+import finance.defi.domain.Wallet;
 import finance.defi.repository.UserRepository;
 import finance.defi.security.SecurityUtils;
 import finance.defi.service.MailService;
 import finance.defi.service.UserService;
+import finance.defi.service.WalletService;
 import finance.defi.service.dto.*;
 import finance.defi.web.rest.errors.*;
 import finance.defi.web.rest.vm.KeyAndPasswordVM;
@@ -44,11 +46,17 @@ public class AccountResource {
 
     private final MailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    private final WalletService walletService;
+
+    public AccountResource(UserRepository userRepository,
+                           UserService userService,
+                           MailService mailService,
+                           WalletService walletService) {
 
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
+        this.walletService = walletService;
     }
 
     /**
@@ -120,6 +128,16 @@ public class AccountResource {
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
 
         return new PrePaymentDTO(current.getSecret());
+    }
+
+    @GetMapping("/account/wallet")
+    public Wallet accountWallet() {
+        Wallet wallet = walletService.findByCurrentUser();
+        if (wallet == null) {
+            throw new EntityNotFoundException("wallet not found");
+        }
+
+        return wallet;
     }
 
     /**

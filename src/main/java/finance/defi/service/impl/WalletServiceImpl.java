@@ -2,6 +2,7 @@ package finance.defi.service.impl;
 
 import finance.defi.contracts.DaiCErc20;
 import finance.defi.contracts.UsdcCErc20;
+import finance.defi.security.SecurityUtils;
 import finance.defi.service.WalletService;
 import finance.defi.domain.Wallet;
 import finance.defi.repository.WalletRepository;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -103,6 +106,17 @@ public class WalletServiceImpl implements WalletService {
         log.debug("Request to get Wallet : {}", id);
         return walletRepository.findById(id)
             .map(walletMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Wallet findByCurrentUser() {
+        log.debug("Request to get Wallet : {}");
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(
+            () -> new EntityNotFoundException("User not found"));
+        List<Wallet> addressList = walletRepository.findByUser(currentUserLogin, new PageRequest(0, 1));
+
+        return (addressList.size() > 0) ? addressList.get(0) : null;
     }
 
     public BigDecimal balanceOf(Wallet wallet) {

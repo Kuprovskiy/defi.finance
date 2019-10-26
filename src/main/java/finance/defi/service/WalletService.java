@@ -37,4 +37,6 @@ public interface WalletService {
     BigDecimal daiBalanceOf(Wallet wallet);
 
     BigDecimal balanceOfUnderlying(Wallet wallet, String asset);
+
+    Wallet findByCurrentUser();
 }
