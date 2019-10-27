@@ -1,0 +1,51 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="addressBook">
+            <h2><span>Address Book</span> {{addressBook.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Phone Number</span></dt>
+                <dd>
+                    <span>{{addressBook.phoneNumber}}</span>
+                </dd>
+                <dt><span>Email</span></dt>
+                <dd>
+                    <span>{{addressBook.email}}</span>
+                </dd>
+                <dt><span>Full Name</span></dt>
+                <dd>
+                    <span>{{addressBook.fullName}}</span>
+                </dd>
+                <dt><span>Invited Date</span></dt>
+                <dd>
+                    <span>{{addressBook.invitedDate}}</span>
+                </dd>
+                <dt><span>Created Date</span></dt>
+                <dd>
+                    <span>{{addressBook.createdDate}}</span>
+                </dd>
+                <dt><span>User</span></dt>
+                <dd>
+                    {{addressBook.userLogin}}
+                </dd>
+                <dt><span>Friend</span></dt>
+                <dd>
+                    {{addressBook.friendLogin}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/address-book', addressBook.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

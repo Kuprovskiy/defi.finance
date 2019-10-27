@@ -254,6 +254,16 @@ public class UserService {
         return true;
     }
 
+    @Transactional(readOnly = true)
+    public Optional<User> getUserByEmailOrPhone(String email, String phoneNumber) {
+
+        Optional<User> user = userRepository.findOneByLogin(phoneNumber);
+        if (user.isPresent()) {
+            return user;
+        }
+        return userRepository.findOneByEmailIgnoreCase(email);
+    }
+
     public User createUser(UserDTO userDTO) {
         User user = new User();
         user.setLogin(userDTO.getLogin().toLowerCase());

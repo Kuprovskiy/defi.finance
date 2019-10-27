@@ -4,9 +4,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * A DTO for the {@link defi.digital.cash.domain.Assets} entity.
- */
 public class DefaultAssetsDTO implements Serializable {
 
     @NotNull
