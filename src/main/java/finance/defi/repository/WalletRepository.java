@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Data  repository for the Wallet entity.
@@ -17,5 +18,7 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
     @Query("select wallet from Wallet wallet where wallet.user.login = :login ORDER BY wallet.id DESC")
     List<Wallet> findByUser(@Param("login") String login, Pageable pageable);
+
+    Optional<Wallet> findByUser(Long id);
 
 }

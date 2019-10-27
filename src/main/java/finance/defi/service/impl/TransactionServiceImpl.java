@@ -11,10 +11,7 @@ import finance.defi.service.TransactionService;
 import finance.defi.service.TrustedDeviceService;
 import finance.defi.service.UserService;
 import finance.defi.service.WalletService;
-import finance.defi.service.dto.RawTransactionDTO;
-import finance.defi.service.dto.TransactionDTO;
-import finance.defi.service.dto.TransactionHashDTO;
-import finance.defi.service.dto.TrustedDeviceDTO;
+import finance.defi.service.dto.*;
 import finance.defi.service.mapper.TransactionMapper;
 import finance.defi.service.util.ConverterUtil;
 import finance.defi.service.util.NumberUtil;
@@ -143,7 +140,8 @@ public class TransactionServiceImpl implements TransactionService {
         User currentUser = userService.getUserWithAuthorities().orElseThrow(
             () -> new EntityNotFoundException("User not found"));
 
-        Wallet wallet = walletService.findByCurrentUser();
+        Wallet wallet = walletService.findByCurrent();
+
         if (wallet == null) {
             throw new EntityNotFoundException("wallet not found");
         }

@@ -29,6 +29,8 @@ public interface WalletService {
      */
     Optional<WalletDTO> findOne(Long id);
 
+    Optional<WalletDTO> findOneByUser(Long id);
+
     BigDecimal ethBalanceOf(Wallet wallet);
 
     BigDecimal usdcBalanceOf(Wallet wallet);
@@ -37,5 +39,7 @@ public interface WalletService {
 
     BigDecimal balanceOfUnderlying(Wallet wallet, String asset);
 
-    Wallet findByCurrentUser();
+    WalletDTO findByCurrentUser();
+
+    Wallet findByCurrent();
 }

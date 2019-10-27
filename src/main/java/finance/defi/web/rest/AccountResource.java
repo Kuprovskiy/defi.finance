@@ -135,11 +135,20 @@ public class AccountResource {
     }
 
     @GetMapping("/account/wallet")
-    public Wallet accountWallet() {
-        Wallet wallet = walletService.findByCurrentUser();
+    public WalletDTO accountWallet() {
+        WalletDTO wallet = walletService.findByCurrentUser();
         if (wallet == null) {
             throw new EntityNotFoundException("wallet not found");
         }
+
+        return wallet;
+    }
+
+    @GetMapping("/account/{id}/wallet")
+    public WalletDTO accountWallet(@PathVariable Long id) {
+        WalletDTO wallet = walletService.findOne(id).orElseThrow(
+            () -> new EntityNotFoundException("wallet not found")
+        );
 
         return wallet;
     }

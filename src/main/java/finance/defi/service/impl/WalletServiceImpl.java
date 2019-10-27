@@ -108,12 +108,29 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional(readOnly = true)
-    public Wallet findByCurrentUser() {
+    public Optional<WalletDTO> findOneByUser(Long id) {
+        log.debug("Request to get Wallet : {}", id);
+        return walletRepository.findByUser(id)
+            .map(walletMapper::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public WalletDTO findByCurrentUser() {
         log.debug("Request to get Wallet : {}");
         String currentUserLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(
             () -> new EntityNotFoundException("User not found"));
         List<Wallet> addressList = walletRepository.findByUser(currentUserLogin, new PageRequest(0, 1));
+        return walletMapper.toDto((addressList.size() > 0) ? addressList.get(0) : null);
+    }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Wallet findByCurrent() {
+        log.debug("Request to get Wallet : {}");
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(
+            () -> new EntityNotFoundException("User not found"));
+        List<Wallet> addressList = walletRepository.findByUser(currentUserLogin, new PageRequest(0, 1));
         return (addressList.size() > 0) ? addressList.get(0) : null;
     }
 
