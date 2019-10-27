@@ -27,6 +27,8 @@ public class TransactionDTO implements Serializable {
 
     private Long assetId;
 
+    private String assetName;
+
     private Long userId;
 
     private String userLogin;
@@ -113,6 +115,14 @@ public class TransactionDTO implements Serializable {
 
     public void setRecipientLogin(String userLogin) {
         this.recipientLogin = userLogin;
+    }
+
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
     }
 
     @Override

@@ -135,7 +135,7 @@ public class TransactionServiceImpl implements TransactionService {
         Gson gson = new Gson();
         EthSendTransaction ethSendTx = null;
         RawTransaction encodedRawTx = TransactionDecoderUtil.decode(rawTransactionDTO.getTx());
-        BigDecimal amount = new BigDecimal(ConverterUtil.fromWei(encodedRawTx.getValue(), Convert.Unit.ETHER));
+//        BigDecimal amount = new BigDecimal(ConverterUtil.fromWei(encodedRawTx.getValue(), Convert.Unit.ETHER));
 
         User currentUser = userService.getUserWithAuthorities().orElseThrow(
             () -> new EntityNotFoundException("User not found"));
@@ -160,7 +160,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         // validate balance
-        validateBalance(wallet, amount, rawTransactionDTO.getAsset());
+        validateBalance(wallet, rawTransactionDTO.getAmount(), rawTransactionDTO.getAsset());
 
         Asset asset = assetRepository.findByNameAndIsVisible(rawTransactionDTO.getAsset(), true).orElseThrow(
             () -> new EntityNotFoundException("Asset not found"));
@@ -176,7 +176,7 @@ public class TransactionServiceImpl implements TransactionService {
                 log.info("saving transaction to db");
 
                 // save transaction
-                saveTransaction(amount,
+                saveTransaction(rawTransactionDTO.getAmount(),
                     asset,
                     currentUser,
                     TransactionType.SUPPLY,

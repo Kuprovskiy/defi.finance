@@ -18,6 +18,8 @@ public class RawTransactionDTO implements Serializable {
     @NotNull
     private String asset;
 
+    private BigDecimal amount;
+
     private String code;
 
 
@@ -51,6 +53,14 @@ public class RawTransactionDTO implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     @Override

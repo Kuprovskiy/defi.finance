@@ -103,7 +103,7 @@ public class PriceOracle {
      * <p>
      * This is scheduled to get fired every hour.
      */
-//    @Scheduled(cron = "1 * * * * ?")
+    @Scheduled(cron = "1 * * * * ?")
     public void syncBalancesWithNode() {
         log.debug("Start synchronization balance with smart contract: {}");
 
@@ -166,7 +166,7 @@ public class PriceOracle {
      * <p>
      * This is scheduled to get fired every hour.
      */
-//    @Scheduled(cron = "1 * * * * ?")
+    @Scheduled(cron = "1 * * * * ?")
     public void syncBalancesOfUnderlyingWithNode() {
         log.debug("Start synchronization balance of underlying with smart contract: {}");
 

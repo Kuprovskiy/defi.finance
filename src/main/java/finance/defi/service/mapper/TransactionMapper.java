@@ -12,6 +12,7 @@ import org.mapstruct.Mapping;
 public interface TransactionMapper extends EntityMapper<TransactionDTO, Transaction> {
 
     @Mapping(source = "asset.id", target = "assetId")
+    @Mapping(source = "asset.name", target = "assetName")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.login", target = "userLogin")
     @Mapping(source = "recipient.id", target = "recipientId")
