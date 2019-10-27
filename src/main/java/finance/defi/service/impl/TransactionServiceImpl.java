@@ -179,7 +179,7 @@ public class TransactionServiceImpl implements TransactionService {
                 saveTransaction(rawTransactionDTO.getAmount(),
                     asset,
                     currentUser,
-                    TransactionType.SUPPLY,
+                    rawTransactionDTO.getType(),
                     ethSendTx.getTransactionHash(),
                     gson.toJson(encodedRawTx));
             }
