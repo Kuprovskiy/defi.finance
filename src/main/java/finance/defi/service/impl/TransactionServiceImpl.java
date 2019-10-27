@@ -17,13 +17,16 @@ import finance.defi.service.dto.TransactionHashDTO;
 import finance.defi.service.dto.TrustedDeviceDTO;
 import finance.defi.service.mapper.TransactionMapper;
 import finance.defi.service.util.ConverterUtil;
+import finance.defi.service.util.NumberUtil;
 import finance.defi.service.util.TransactionDecoderUtil;
 import finance.defi.web.rest.errors.EntityNotFoundException;
+import org.jboss.aerogear.security.otp.Totp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.web3j.crypto.RawTransaction;
@@ -145,11 +148,18 @@ public class TransactionServiceImpl implements TransactionService {
             throw new EntityNotFoundException("wallet not found");
         }
 
-        //TODO validate 2FA
         //TODO validate daily transfer limit
 
         // validate trust device
         validateTrustDevice(request, currentUser);
+
+        // validate google 2FA
+        if (currentUser.getUsing2FA()) {
+            Totp totp = new Totp(currentUser.getSecret2fa());
+            if (!NumberUtil.isValidLong(rawTransactionDTO.getCode()) || !totp.verify(rawTransactionDTO.getCode())) {
+                throw new BadCredentialsException("Invalid verification code");
+            }
+        }
 
         // validate balance
         validateBalance(wallet, amount, rawTransactionDTO.getAsset());

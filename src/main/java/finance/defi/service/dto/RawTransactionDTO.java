@@ -18,6 +18,8 @@ public class RawTransactionDTO implements Serializable {
     @NotNull
     private String asset;
 
+    private String code;
+
 
     public String getTx() {
         return tx;
@@ -41,6 +43,14 @@ public class RawTransactionDTO implements Serializable {
 
     public void setAsset(String asset) {
         this.asset = asset;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     @Override
