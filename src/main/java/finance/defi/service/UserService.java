@@ -137,7 +137,7 @@ public class UserService {
         newUser.setLangKey(userDTO.getLangKey());
         newUser.setSecret(secret);
         // new user is not active
-        newUser.setActivated(false);
+        newUser.setActivated(true);
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
         Set<Authority> authorities = new HashSet<>();
